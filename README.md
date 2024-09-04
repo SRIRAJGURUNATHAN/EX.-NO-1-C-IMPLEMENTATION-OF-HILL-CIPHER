@@ -18,59 +18,82 @@ STEP-5: Combine all these groups to get the complete cipher text.
 ## PROGRAM: 
 ```
 #include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
 
-int keyMatrix[3][3];
-int messageVector[3][1];
-int cipherMatrix[3][1];
+void encipher();
+void decipher();
 
-void getKeyMatrix(char key[]) {
-    int k = 0;
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            keyMatrix[i][j] = (key[k]) % 65;
-            k++;
-        }
+int main() {
+    int choice;
+    while (1) {
+        printf("\n1. Encrypt Text");
+        printf("\t2. Decrypt Text");
+        printf("\t3. Exit");
+        printf("\n\nEnter Your Choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 3)
+            exit(0);
+        else if (choice == 1)
+            encipher();
+        else if (choice == 2)
+            decipher();
+        else
+            printf("Please Enter Valid Option.\n");
     }
 }
 
-void encrypt() {
-    for (int i = 0; i < 3; i++) {
-        cipherMatrix[i][0] = 0;
-        for (int x = 0; x < 3; x++) {
-            cipherMatrix[i][0] += keyMatrix[i][x] * messageVector[x][0];
+void encipher() {
+    unsigned int i, j;
+    char input[50], key[10];
+    
+    printf("\n\nEnter Plain Text: ");
+    scanf("%s", input);
+    
+    printf("\nEnter Key Value: ");
+    scanf("%s", key);
+    
+    printf("\nResultant Cipher Text: ");
+    for (i = 0, j = 0; i < strlen(input); i++, j++) {
+        if (j >= strlen(key)) {
+            j = 0;
         }
-        cipherMatrix[i][0] = cipherMatrix[i][0] % 26;
-    }
-}
-
-void HillCipher(char message[], char key[]) {
-    getKeyMatrix(key);
-
-    for (int i = 0; i < 3; i++) {
-        messageVector[i][0] = (message[i]) % 65;
-    }
-
-    encrypt();
-
-    printf("Ciphertext: ");
-    for (int i = 0; i < 3; i++) {
-        printf("%c", cipherMatrix[i][0] + 65);
+        printf("%c", 65 + (((toupper(input[i]) - 65) + (toupper(key[j]) - 65)) % 26));
     }
     printf("\n");
 }
 
-int main() {
-    char message[] = "ABINAV";
-    char key[] = "GYBNQKURP";
-
-    printf("Original Text: %s\n", message);
-    HillCipher(message, key);
-
-    return 0;
+void decipher() {
+    unsigned int i, j;
+    char input[50], key[10];
+    int value;
+    
+    printf("\n\nEnter Cipher Text: ");
+    scanf("%s", input);
+    
+    printf("\nEnter the Key Value: ");
+    scanf("%s", key);
+    
+    printf("\nResultant Plain Text: ");
+    for (i = 0, j = 0; i < strlen(input); i++, j++) {
+        if (j >= strlen(key)) {
+            j = 0;
+        }
+        value = (toupper(input[i]) - 65) - (toupper(key[j]) - 65);
+        if (value < 0) {
+            value += 26;  // Correct wrap-around for negative values
+        }
+        printf("%c", 65 + (value % 26));
+    }
+    printf("\n");
 }
+
 ```
 ## OUTPUT:
-![image](https://github.com/user-attachments/assets/88cb5b3e-cfe8-4dfb-a020-167c939a8edd)
+![Screenshot 2024-09-04 105830](https://github.com/user-attachments/assets/a3b7f2cf-d171-4320-8fb5-bd3504848984)
+
 
 ## RESULT:
   Thus the hill cipher substitution technique had been implemented successfully.
